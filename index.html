@@ -14,6 +14,7 @@
             --secondary: #858796;
             --success: #1cc88a;
             --text-dark: #2d3436;
+            --border-color: #edf2f7;
             --shadow: 0 15px 35px rgba(0,0,0,0.1);
             
             /* 공식 로또 공 색상 가이드 */
@@ -22,6 +23,15 @@
             --ball-red: #ff7272;    /* 21~30 */
             --ball-gray: #aaaaaa;   /* 31~40 */
             --ball-green: #b0d840;  /* 41~45 */
+        }
+
+        body.dark-mode {
+            --bg-color: #1a1c23;
+            --card-bg: #242632;
+            --text-dark: #f8fafc;
+            --secondary: #94a3b8;
+            --border-color: #333645;
+            --shadow: 0 15px 35px rgba(0,0,0,0.3);
         }
 
         body {
@@ -33,6 +43,32 @@
             min-height: 100vh;
             margin: 0;
             color: var(--text-dark);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 1.2rem;
+        }
+
+        .dark-mode-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .container {
@@ -43,6 +79,7 @@
             width: 90%;
             max-width: 500px;
             text-align: center;
+            transition: background-color 0.3s, box-shadow 0.3s;
         }
 
         h1 {
@@ -95,12 +132,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #fdfdfd;
+            background: var(--card-bg);
             padding: 12px 18px;
             border-radius: 16px;
-            border: 1px solid #edf2f7;
+            border: 1px solid var(--border-color);
             animation: fadeIn 0.5s ease-out forwards;
             opacity: 0;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
         @keyframes fadeIn {
@@ -111,7 +149,7 @@
         .row-label {
             font-size: 0.85rem;
             font-weight: 600;
-            color: #a0aec0;
+            color: var(--secondary);
             min-width: 45px;
             text-align: left;
         }
@@ -159,6 +197,10 @@
 </head>
 <body>
 
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()" aria-label="다크 모드 전환">
+        <span id="theme-icon">🌙</span>
+    </button>
+
     <div class="container">
         <h1>🍀 행운의 추첨기</h1>
         <p class="subtitle">오늘의 행운을 담은 5개 번호 세트</p>
@@ -171,6 +213,28 @@
     </div>
 
     <script>
+        // 테마 설정 초기화
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('theme-icon').innerText = '☀️';
+        }
+
+        function toggleDarkMode() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                icon.innerText = '☀️';
+            } else {
+                localStorage.setItem('theme', 'light');
+                icon.innerText = '🌙';
+            }
+        }
+
         function getBallClass(num) {
             if (num <= 10) return 'ball-10';
             if (num <= 20) return 'ball-20';
