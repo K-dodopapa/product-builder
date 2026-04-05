@@ -2,49 +2,26 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-<<<<<<< HEAD
-    <title>로또 추첨기</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 100px;
-        }
-
-        h1 {
-            margin-bottom: 30px;
-        }
-
-        #numbers {
-            margin: 20px;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .ball {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            line-height: 50px;
-            margin: 5px;
-            border-radius: 50%;
-            background-color: #ffcc00;
-            color: black;
-        }
-
-        button {
-            padding: 15px 30px;
-            font-size: 18px;
-            cursor: pointer;
-=======
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>프리미엄 로또 추첨기</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap');
+
         :root {
             --bg-color: #f0f2f5;
             --card-bg: #ffffff;
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary: #4e73df;
+            --secondary: #858796;
+            --success: #1cc88a;
             --text-dark: #2d3436;
+            --shadow: 0 15px 35px rgba(0,0,0,0.1);
+            
+            /* 공식 로또 공 색상 가이드 */
+            --ball-yellow: #fbc400; /* 1~10 */
+            --ball-blue: #69c8f2;   /* 11~20 */
+            --ball-red: #ff7272;    /* 21~30 */
+            --ball-gray: #aaaaaa;   /* 31~40 */
+            --ball-green: #b0d840;  /* 41~45 */
         }
 
         body {
@@ -55,57 +32,93 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            color: var(--text-dark);
         }
 
         .container {
             background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 480px;
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 500px;
             text-align: center;
         }
 
         h1 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
             color: var(--text-dark);
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            color: var(--secondary);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
         }
 
         .btn-draw {
-            background: var(--primary-gradient);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 16px 40px;
             font-size: 1.1rem;
             font-weight: 600;
-            border-radius: 10px;
+            border-radius: 14px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
             margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+            width: 100%;
         }
 
-        .btn-draw:hover {
+        .btn-draw:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+            box-shadow: 0 8px 25px rgba(118, 75, 162, 0.4);
+        }
+
+        .btn-draw:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .result-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .lotto-row {
             display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            animation: slideUp 0.4s ease-out forwards;
+            align-items: center;
+            justify-content: space-between;
+            background: #fdfdfd;
+            padding: 12px 18px;
+            border-radius: 16px;
+            border: 1px solid #edf2f7;
+            animation: fadeIn 0.5s ease-out forwards;
             opacity: 0;
         }
 
-        @keyframes slideUp {
+        @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .row-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #a0aec0;
+            min-width: 45px;
+            text-align: left;
+        }
+
+        .balls-container {
+            display: flex;
+            gap: 8px;
         }
 
         .ball {
@@ -113,51 +126,48 @@
             height: 36px;
             line-height: 36px;
             border-radius: 50%;
-            font-weight: bold;
+            font-weight: 700;
             color: white;
             font-size: 0.9rem;
+            text-align: center;
+            box-shadow: inset -4px -4px 8px rgba(0,0,0,0.2), 2px 4px 10px rgba(0,0,0,0.1);
             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2);
+            display: inline-block;
+            transform: scale(0);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        /* 번호대별 색상 지정 */
-        .ball-10 { background: #f1c40f; } /* 노랑 */
-        .ball-20 { background: #3498db; } /* 파랑 */
-        .ball-30 { background: #e74c3c; } /* 빨강 */
-        .ball-40 { background: #95a5a6; } /* 회색 */
-        .ball-45 { background: #2ecc71; } /* 초록 */
+        @keyframes popIn {
+            from { transform: scale(0) rotate(-180deg); opacity: 0; }
+            to { transform: scale(1) rotate(0); opacity: 1; }
+        }
 
-        .row-label {
-            align-self: center;
-            font-size: 0.8rem;
-            color: #999;
-            font-weight: bold;
-            margin-right: 5px;
->>>>>>> d179fdd7dfe5abf54a13632a119f00e62591cf0f
+        /* 번호대별 클래스 */
+        .ball-10 { background-color: var(--ball-yellow); }
+        .ball-20 { background-color: var(--ball-blue); }
+        .ball-30 { background-color: var(--ball-red); }
+        .ball-40 { background-color: var(--ball-gray); }
+        .ball-max { background-color: var(--ball-green); }
+
+        /* 모바일 대응 */
+        @media (max-width: 400px) {
+            .container { padding: 1.5rem; }
+            .ball { width: 32px; height: 32px; line-height: 32px; font-size: 0.85rem; }
+            .balls-container { gap: 5px; }
         }
     </style>
 </head>
 <body>
 
-<<<<<<< HEAD
-    <h1>🎰 로또 추첨기</h1>
-
-    <button onclick="drawLotto()">추첨하기</button>
-
-    <div id="numbers"></div>
-
-    <script>
-        function drawLotto() {
-            let numbers = [];
-
-            while (numbers.length < 6) {
-                let num = Math.floor(Math.random() * 45) + 1;
-
-=======
     <div class="container">
-        <h1>🎰 로또 추첨기</h1>
-        <button class="btn-draw" onclick="drawFiveSets()">행운의 5개 조합 뽑기</button>
-        <div id="resultContainer"></div>
+        <h1>🍀 행운의 추첨기</h1>
+        <p class="subtitle">오늘의 행운을 담은 5개 번호 세트</p>
+        
+        <button class="btn-draw" onclick="drawFiveSets()">번호 생성하기</button>
+
+        <div id="resultContainer" class="result-section">
+            <!-- 결과가 여기에 생성됩니다 -->
+        </div>
     </div>
 
     <script>
@@ -166,58 +176,59 @@
             if (num <= 20) return 'ball-20';
             if (num <= 30) return 'ball-30';
             if (num <= 40) return 'ball-40';
-            return 'ball-45';
+            return 'ball-max';
         }
 
-        function generateNumbers() {
-            const numbers = [];
-            while (numbers.length < 6) {
+        function generateLottoNumbers() {
+            const numbers = new Set();
+            while (numbers.size < 6) {
                 const num = Math.floor(Math.random() * 45) + 1;
->>>>>>> d179fdd7dfe5abf54a13632a119f00e62591cf0f
-                if (!numbers.includes(num)) {
-                    numbers.push(num);
-                }
+                numbers.add(num);
             }
-<<<<<<< HEAD
-
-            numbers.sort((a, b) => a - b);
-
-            let resultHTML = "";
-
-            numbers.forEach(n => {
-                resultHTML += `<span class="ball">${n}</span>`;
-            });
-
-            document.getElementById("numbers").innerHTML = resultHTML;
-=======
-            return numbers.sort((a, b) => a - b);
+            return Array.from(numbers).sort((a, b) => a - b);
         }
 
-        function drawFiveSets() {
+        async function drawFiveSets() {
             const container = document.getElementById('resultContainer');
-            container.innerHTML = ''; // 초기화
+            const btn = document.querySelector('.btn-draw');
+            
+            btn.disabled = true;
+            btn.innerText = '번호 추출 중...';
+            container.innerHTML = ''; 
 
             for (let i = 0; i < 5; i++) {
-                const nums = generateNumbers();
+                const nums = generateLottoNumbers();
                 const row = document.createElement('div');
                 row.className = 'lotto-row';
-                row.style.animationDelay = (i * 0.1) + 's';
-
-                let html = `<span class="row-label">${i + 1}회</span>`;
-                nums.forEach(n => {
-                    html += `<span class="ball ${getBallClass(n)}">${n}</span>`;
-                });
                 
-                row.innerHTML = html;
+                let ballsHTML = `<span class="row-label">SET ${i + 1}</span>`;
+                ballsHTML += '<div class="balls-container"></div>';
+                row.innerHTML = ballsHTML;
                 container.appendChild(row);
+
+                const ballsContainer = row.querySelector('.balls-container');
+                
+                for (let j = 0; j < nums.length; j++) {
+                    const n = nums[j];
+                    const ball = document.createElement('span');
+                    ball.className = `ball ${getBallClass(n)}`;
+                    ball.innerText = n;
+                    ball.style.animationDelay = `${j * 0.1}s`;
+                    ballsContainer.appendChild(ball);
+                    // 약간의 시차를 두고 공이 하나씩 나타나게 함
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
->>>>>>> d179fdd7dfe5abf54a13632a119f00e62591cf0f
+            
+            btn.disabled = false;
+            btn.innerText = '번호 생성하기';
         }
+
+        // 페이지 로드 시 첫 세트 자동 생성 (선택 사항)
+        window.onload = drawFiveSets;
     </script>
 
 </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> d179fdd7dfe5abf54a13632a119f00e62591cf0f
