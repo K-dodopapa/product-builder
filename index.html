@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>프리미엄 로또 추첨기</title>
+    <title>프리미엄 로또 & 2026 사주</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap');
 
@@ -38,8 +38,9 @@
             font-family: 'Pretendard', sans-serif;
             background-color: var(--bg-color);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            padding: 40px 20px;
             min-height: 100vh;
             margin: 0;
             color: var(--text-dark);
@@ -76,9 +77,10 @@
             padding: 2.5rem;
             border-radius: 24px;
             box-shadow: var(--shadow);
-            width: 90%;
+            width: 100%;
             max-width: 500px;
             text-align: center;
+            margin-bottom: 2rem;
             transition: background-color 0.3s, box-shadow 0.3s;
         }
 
@@ -89,13 +91,13 @@
             letter-spacing: -0.5px;
         }
 
-        p.subtitle {
+        .subtitle {
             color: var(--secondary);
             margin-bottom: 2rem;
             font-size: 0.95rem;
         }
 
-        .btn-draw {
+        .btn-draw, .btn-saju {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
@@ -110,16 +112,50 @@
             width: 100%;
         }
 
-        .btn-draw:hover:not(:disabled) {
+        .btn-draw:hover, .btn-saju:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(118, 75, 162, 0.4);
         }
 
-        .btn-draw:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+
+        input[type="date"], select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-dark);
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .saju-result {
+            background: var(--bg-color);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px dashed var(--secondary);
+            text-align: left;
+            margin-top: 1rem;
+            display: none;
+            line-height: 1.6;
+        }
+
+        .saju-result h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.1rem;
         }
 
         .result-section {
@@ -201,6 +237,44 @@
         <span id="theme-icon">🌙</span>
     </button>
 
+    <!-- 사주 섹션 -->
+    <div class="container">
+        <h1>🐎 2026년 병오년 사주</h1>
+        <p class="subtitle">붉은 말의 해, 당신의 신년 운세를 확인하세요</p>
+
+        <div class="input-group">
+            <label for="birthDate">생년월일</label>
+            <input type="date" id="birthDate" value="1990-01-01">
+        </div>
+
+        <div class="input-group">
+            <label for="birthTime">태어난 시간 (선택)</label>
+            <select id="birthTime">
+                <option value="unknown">모름</option>
+                <option value="0">자시 (23:30 ~ 01:30)</option>
+                <option value="1">축시 (01:30 ~ 03:30)</option>
+                <option value="2">인시 (03:30 ~ 05:30)</option>
+                <option value="3">묘시 (05:30 ~ 07:30)</option>
+                <option value="4">진시 (07:30 ~ 09:30)</option>
+                <option value="5">사시 (09:30 ~ 11:30)</option>
+                <option value="6">오시 (11:30 ~ 13:30)</option>
+                <option value="7">미시 (13:30 ~ 15:30)</option>
+                <option value="8">신시 (15:30 ~ 17:30)</option>
+                <option value="9">유시 (17:30 ~ 19:30)</option>
+                <option value="10">술시 (19:30 ~ 21:30)</option>
+                <option value="11">해시 (21:30 ~ 23:30)</option>
+            </select>
+        </div>
+
+        <button class="btn-saju" onclick="calculateSaju()">운세 보기</button>
+
+        <div id="sajuResult" class="saju-result">
+            <h3 id="sajuTitle"></h3>
+            <p id="sajuContent"></p>
+        </div>
+    </div>
+
+    <!-- 로또 섹션 -->
     <div class="container">
         <h1>🍀 행운의 추첨기</h1>
         <p class="subtitle">오늘의 행운을 담은 5개 번호 세트</p>
@@ -233,6 +307,40 @@
                 localStorage.setItem('theme', 'light');
                 icon.innerText = '🌙';
             }
+        }
+
+        function calculateSaju() {
+            const birthDate = document.getElementById('birthDate').value;
+            if (!birthDate) {
+                alert('생년월일을 입력해주세요.');
+                return;
+            }
+
+            // 타임존 버그 방지: 문자열을 직접 파싱
+            const [year, month, day] = birthDate.split('-').map(Number);
+
+            const today = new Date();
+            const todayYear = today.getFullYear();
+            const todayMonth = today.getMonth() + 1;
+            const todayDay = today.getDate();
+
+            const results = [
+                { title: "🔥 뜨거운 열정의 해", content: "2026년은 병오년으로 화(火)의 기운이 매우 강합니다. 당신의 생년월일과 조화를 이루어 새로운 도전에 적합한 시기입니다. 특히 상반기에 큰 금전운이 따를 것으로 보입니다." },
+                { title: "🌊 안정을 찾는 지혜", content: "주변 환경이 급격히 변할 수 있으나 본연의 페이스를 유지하는 것이 중요합니다. 인맥을 통한 귀인의 도움이 예상되며, 가을쯤 뜻밖의 기쁜 소식이 들려올 것입니다." },
+                { title: "🌳 성장의 결실을 맺는 시기", content: "지난 몇 년간 노력했던 일들이 2026년에 비로소 결실을 맺습니다. 무리한 투자보다는 현재의 위치를 공고히 하는 것이 유리합니다. 건강 관리에 유의하세요." },
+                { title: "✨ 빛나는 명예와 보람", content: "자신의 능력을 널리 알리게 되는 해입니다. 승진이나 합격 등 명예로운 일이 생길 가능성이 높습니다. 자신감을 가지고 추진하던 일을 밀어붙이세요." }
+            ];
+
+            // 생년월일 + 오늘 날짜를 함께 반영해 매일 다른 결과 산출
+            const index = (year + month + day + todayYear + todayMonth + todayDay) % results.length;
+            const selectedResult = results[index];
+
+            const resultDiv = document.getElementById('sajuResult');
+            document.getElementById('sajuTitle').innerText = selectedResult.title;
+            document.getElementById('sajuContent').innerText = selectedResult.content;
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.animation = 'fadeIn 0.8s ease-out';
         }
 
         function getBallClass(num) {
