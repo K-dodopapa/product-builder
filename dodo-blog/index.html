@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도도파파의 연구소 🔬</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- 헤더 -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="logo" onclick="backToList()">
+                <span class="logo-icon">🔬</span>
+                <div class="logo-text">
+                    <strong>도도파파의 연구소</strong>
+                    <small>도도형제와 함께 크는 아빠의 기록</small>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <a href="#" onclick="filterPosts('전체'); return false;">전체</a>
+                <a href="#" onclick="filterPosts('주말연구소'); return false;">주말연구소</a>
+                <a href="#" onclick="filterPosts('육아인사이트'); return false;">육아인사이트</a>
+                <a href="#" onclick="filterPosts('도도형제일상'); return false;">도도형제일상</a>
+                <a href="#" onclick="filterPosts('AI육아'); return false;">AI육아</a>
+            </nav>
+            <button class="hamburger" onclick="toggleMenu()" aria-label="메뉴">☰</button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#" onclick="filterPosts('전체'); toggleMenu(); return false;">전체 글</a>
+            <a href="#" onclick="filterPosts('주말연구소'); toggleMenu(); return false;">🧪 주말연구소</a>
+            <a href="#" onclick="filterPosts('육아인사이트'); toggleMenu(); return false;">💡 육아인사이트</a>
+            <a href="#" onclick="filterPosts('도도형제일상'); toggleMenu(); return false;">👦 도도형제일상</a>
+            <a href="#" onclick="filterPosts('AI육아'); toggleMenu(); return false;">🤖 AI육아</a>
+        </div>
+    </header>
+
+    <!-- 목록 페이지 -->
+    <div id="list-view">
+
+        <!-- 히어로 -->
+        <section class="hero">
+            <div class="hero-inner">
+                <p class="hero-tag">도도(7세) + 미미(5세) 형제와 함께</p>
+                <h1>우리집 연구소는<br>매일 열려있습니다 🏠</h1>
+                <p class="hero-desc">실패해도 괜찮고, 엉망이 되어도 괜찮아요.<br>그게 진짜 육아니까요.</p>
+                <div class="hero-stats">
+                    <div class="stat"><strong id="total-count">0</strong><span>개의 글</span></div>
+                    <div class="stat"><strong>4</strong><span>개의 카테고리</span></div>
+                    <div class="stat"><strong>2</strong><span>명의 연구원</span></div>
+                </div>
+            </div>
+            <div class="hero-emoji-wrap">
+                <div class="hero-emoji">👨‍👦‍👦</div>
+            </div>
+        </section>
+
+        <!-- 카테고리 필터 -->
+        <section class="filter-section">
+            <div class="filter-inner">
+                <button class="filter-btn active" data-category="전체" onclick="filterPosts('전체')">전체</button>
+                <button class="filter-btn" data-category="주말연구소" onclick="filterPosts('주말연구소')">🧪 주말연구소</button>
+                <button class="filter-btn" data-category="육아인사이트" onclick="filterPosts('육아인사이트')">💡 육아인사이트</button>
+                <button class="filter-btn" data-category="도도형제일상" onclick="filterPosts('도도형제일상')">👦 도도형제일상</button>
+                <button class="filter-btn" data-category="AI육아" onclick="filterPosts('AI육아')">🤖 AI육아</button>
+            </div>
+        </section>
+
+        <!-- 검색 -->
+        <section class="search-section">
+            <div class="search-inner">
+                <input type="text" id="searchInput" placeholder="🔍 글 제목이나 내용을 검색해보세요..." oninput="searchPosts(this.value)">
+            </div>
+        </section>
+
+        <!-- 추천 글 (최신 글) -->
+        <section class="featured-section" id="featured-section">
+            <div class="section-inner">
+                <h2 class="section-title">✨ 이번 주 추천글</h2>
+                <div id="featured-card"></div>
+            </div>
+        </section>
+
+        <!-- 글 목록 -->
+        <section class="posts-section">
+            <div class="section-inner">
+                <h2 class="section-title" id="posts-title">📋 전체 글</h2>
+                <div class="posts-grid" id="posts-grid"></div>
+                <div class="empty-state" id="empty-state" style="display:none;">
+                    <p>😅 해당하는 글이 없어요</p>
+                    <button onclick="filterPosts('전체')">전체 글 보기</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 상세 페이지 -->
+    <div id="detail-view" style="display:none;">
+        <div class="detail-header">
+            <div class="detail-header-inner">
+                <button class="back-btn" onclick="backToList()">← 목록으로</button>
+            </div>
+        </div>
+        <article class="detail-article">
+            <div class="detail-inner">
+                <div id="detail-content"></div>
+                <div class="detail-footer">
+                    <button class="back-btn-bottom" onclick="backToList()">← 목록으로 돌아가기</button>
+                    <div class="related-posts">
+                        <h3>다른 글도 읽어보세요</h3>
+                        <div id="related-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-logo">🔬 도도파파의 연구소</div>
+            <p>도도(7세) + 미미(5세)와 함께 성장 중인 아빠의 솔직한 기록</p>
+            <p class="footer-small">© 2026 도도파파. 공감되면 주변에 공유해주세요 😊</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
